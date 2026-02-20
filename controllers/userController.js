@@ -180,5 +180,4 @@ export {
   deleteUserById,
   getUserById,
   updateUserById,
-  makeUserAdmin,
 };
