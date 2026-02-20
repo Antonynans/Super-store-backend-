@@ -1,7 +1,7 @@
 {
-  "name": "MERN e-commerce",
+  "name": "Super store",
   "version": "1.0.0",
-  "description": "MERN Stack E-Commerce Project",
+  "description": "Super store Project",
   "main": "index.js",
   "type": "module",
   "scripts": {
