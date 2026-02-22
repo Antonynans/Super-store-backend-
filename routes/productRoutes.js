@@ -1,8 +1,6 @@
 import express from "express";
-import formidable from "express-formidable";
 const router = express.Router();
 
-// controllers
 import {
   addProduct,
   updateProductDetails,
@@ -15,26 +13,28 @@ import {
   fetchNewProducts,
   filterProducts,
 } from "../controllers/productController.js";
+
 import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 import checkId from "../middlewares/checkId.js";
 
-router
-  .route("/")
-  .get(fetchProducts)
-  .post(authenticate, authorizeAdmin, formidable(), addProduct);
+router.get("/", fetchProducts);
 
-router.route("/allproducts").get(fetchAllProducts);
-router.route("/:id/reviews").post(authenticate, checkId, addProductReview);
+router.get("/allproducts", fetchAllProducts);
 
 router.get("/top", fetchTopProducts);
+
 router.get("/new", fetchNewProducts);
 
-router
-  .route("/:id")
-  .get(fetchProductById)
-  .put(authenticate, authorizeAdmin, formidable(), updateProductDetails)
-  .delete(authenticate, authorizeAdmin, removeProduct);
+router.get("/:id", fetchProductById);
 
-router.route("/filtered-products").post(filterProducts);
+router.post("/", authenticate, authorizeAdmin, addProduct);
+
+router.put("/:id", authenticate, authorizeAdmin, updateProductDetails);
+
+router.delete("/:id", authenticate, authorizeAdmin, removeProduct);
+
+router.post("/:id/reviews", authenticate, checkId, addProductReview);
+
+router.post("/filtered-products", filterProducts);
 
 export default router;
