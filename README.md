@@ -48,7 +48,7 @@ A robust REST API built with Node.js, Express, and MongoDB for a full-featured e
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/MERN-E-Commerce-Store.git
+git clone https://github.com/Antonynans/super-store-backend.git
 
 # Navigate to backend directory
 cd backend
@@ -169,4 +169,4 @@ Contributions are welcome! Please follow these steps:
 
 This project is licensed under the MIT License.
 
-#### Author: [@YourUsername](https://github.com/yourusername)
+#### Author: [@Antonynans](https://Github.com/Antonynans)
