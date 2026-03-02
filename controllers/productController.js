@@ -3,16 +3,8 @@ import Product from "../models/productModel.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      category,
-      image,
-      quantity,
-      brand,
-      countInStock,
-    } = req.body;
+    const { name, description, price, category, image, brand, countInStock } =
+      req.body;
 
     if (!name || !price || !category || !image) {
       return res.status(400).json({
@@ -26,7 +18,6 @@ const addProduct = asyncHandler(async (req, res) => {
       price,
       category,
       image,
-      quantity,
       brand,
       countInStock,
       user: req.user._id,
@@ -45,16 +36,8 @@ const addProduct = asyncHandler(async (req, res) => {
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
     const { productId } = req.params;
-    const {
-      name,
-      description,
-      price,
-      category,
-      image,
-      quantity,
-      brand,
-      countInStock,
-    } = req.body;
+    const { name, description, price, category, image, brand, countInStock } =
+      req.body;
 
     let product = await Product.findById(productId);
     if (!product) {
@@ -66,7 +49,6 @@ const updateProductDetails = asyncHandler(async (req, res) => {
     product.price = price || product.price;
     product.category = category || product.category;
     product.image = image || product.image;
-    product.quantity = quantity || product.quantity;
     product.brand = brand || product.brand;
     product.countInStock = countInStock || product.countInStock;
 
@@ -139,7 +121,6 @@ const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
     const products = await Product.find({})
       .populate("category")
-      .limit(12)
       .sort({ createdAt: -1 });
 
     res.json(products);

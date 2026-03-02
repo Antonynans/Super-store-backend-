@@ -8,6 +8,7 @@ import {
   countTotalOrders,
   calculateTotalSales,
   calcualteTotalSalesByDate,
+  getOrdersByDate,
   findOrderById,
   markOrderAsPaid,
   markOrderAsDelivered,
@@ -24,6 +25,7 @@ router.route("/mine").get(authenticate, getUserOrders);
 router.route("/total-orders").get(countTotalOrders);
 router.route("/total-sales").get(calculateTotalSales);
 router.route("/total-sales-by-date").get(calcualteTotalSalesByDate);
+router.route("/total-orders-by-date").get(getOrdersByDate);
 router.route("/:id").get(authenticate, findOrderById);
 router.route("/:id/pay").put(authenticate, markOrderAsPaid);
 router

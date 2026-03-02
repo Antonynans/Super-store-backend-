@@ -118,21 +118,53 @@ const calcualteTotalSalesByDate = async (req, res) => {
   try {
     const salesByDate = await Order.aggregate([
       {
-        $match: {
-          isPaid: true,
-        },
-      },
-      {
         $group: {
           _id: {
-            $dateToString: { format: "%Y-%m-%d", date: "$paidAt" },
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: {
+                $cond: [
+                  { $ifNull: ["$paidAt", false] },
+                  "$paidAt",
+                  "$createdAt",
+                ],
+              },
+            },
           },
           totalSales: { $sum: "$totalPrice" },
         },
       },
+      {
+        $sort: { _id: 1 },
+      },
     ]);
 
     res.json(salesByDate);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getOrdersByDate = async (req, res) => {
+  try {
+    const ordersByDate = await Order.aggregate([
+      {
+        $group: {
+          _id: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$createdAt",
+            },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { _id: 1 },
+      },
+    ]);
+
+    res.json(ordersByDate);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -207,6 +239,7 @@ export {
   countTotalOrders,
   calculateTotalSales,
   calcualteTotalSalesByDate,
+  getOrdersByDate,
   findOrderById,
   markOrderAsPaid,
   markOrderAsDelivered,
