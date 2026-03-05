@@ -105,15 +105,21 @@ const fetchProducts = asyncHandler(async (req, res) => {
 const fetchProductById = asyncHandler(async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("category");
+
     if (product) {
       return res.json(product);
     } else {
-      res.status(404);
-      throw new Error("Product not found");
+      return res.status(404).json({
+        error: "Product not found",
+        message: "The product with the specified ID does not exist",
+      });
     }
   } catch (error) {
     console.error(error);
-    res.status(404).json({ error: "Product not found" });
+    return res.status(404).json({
+      error: "Product not found",
+      message: "The product with the specified ID does not exist",
+    });
   }
 });
 
