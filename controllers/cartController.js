@@ -60,6 +60,13 @@ const addToCart = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
+    // Validate stock
+    if (qty > product.countInStock) {
+      return res.status(400).json({
+        error: `Only ${product.countInStock} items available in stock`,
+      });
+    }
+
     let cart = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
@@ -70,7 +77,7 @@ const addToCart = async (req, res) => {
     }
 
     const existItem = cart.cartItems.find(
-      (item) => item.product.toString() === productId,
+      (item) => item.product.toString() === productId.toString(),
     );
 
     if (existItem) {
