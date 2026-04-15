@@ -5,11 +5,11 @@ dotenv.config();
 
 export const uploadProductImage = async (req, res) => {
   try {
-    if (!req.files || !req.files.image) {
-      return res.status(400).json({ message: "No image file provided" });
+    if (!req.files || !req.files.file) {
+      return res.status(400).json({ message: "No file provided" });
     }
 
-    const file = req.files.image;
+    const file = req.files.file;
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -25,8 +25,8 @@ export const uploadProductImage = async (req, res) => {
         }
 
         res.status(200).json({
-          message: "Image uploaded to Cloudinary",
-          image: result.secure_url,
+          message: "File uploaded to Cloudinary",
+          url: result.secure_url,
           publicId: result.public_id,
         });
       },

@@ -1,14 +1,36 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/productModel.js";
 
+const normalizeImages = (imagesInput) => {
+  if (Array.isArray(imagesInput)) {
+    return imagesInput.filter(Boolean);
+  }
+
+  if (typeof imagesInput === "string") {
+    return imagesInput
+      .split(",")
+      .map((value) => value.trim())
+      .filter(Boolean);
+  }
+
+  return [];
+};
+
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, image, brand, countInStock } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      category,
+      images,
+      countInStock,
+    } = req.body;
+    const normalizedImages = normalizeImages(images);
 
-    if (!name || !price || !category || !image) {
+    if (!name || !price || !category || normalizedImages.length === 0) {
       return res.status(400).json({
-        message: "Missing required fields (name, price, category, image)",
+        message: "Missing required fields (name, price, category, images)",
       });
     }
 
@@ -17,8 +39,7 @@ const addProduct = asyncHandler(async (req, res) => {
       description,
       price,
       category,
-      image,
-      brand,
+      images: normalizedImages,
       countInStock,
       user: req.user._id,
     });
@@ -36,21 +57,32 @@ const addProduct = asyncHandler(async (req, res) => {
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
     const { productId } = req.params;
-    const { name, description, price, category, image, brand, countInStock } =
-      req.body;
+    const {
+      name,
+      description,
+      price,
+      category,
+      images,
+
+      countInStock,
+    } = req.body;
 
     let product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
 
+    const normalizedImages = normalizeImages(images);
+
     product.name = name || product.name;
     product.description = description || product.description;
     product.price = price || product.price;
     product.category = category || product.category;
-    product.image = image || product.image;
-    product.brand = brand || product.brand;
-    product.countInStock = countInStock || product.countInStock;
+    product.countInStock = countInStock ?? product.countInStock;
+
+    if (normalizedImages.length > 0) {
+      product.images = normalizedImages;
+    }
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -178,7 +210,7 @@ const addProductReview = asyncHandler(async (req, res) => {
 
 const fetchTopProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ rating: -1 }).limit(4);
+    const products = await Product.find({}).sort({ rating: -1 }).limit(6);
     res.json(products);
   } catch (error) {
     console.error(error);

@@ -12,15 +12,31 @@ const reviewSchema = mongoose.Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const productSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    image: { type: String, required: true },
-    brand: { type: String, required: true },
-    quantity: { type: Number, required: true },
+    images: {
+      type: [String],
+      required: true,
+      validate: {
+        validator: (value) => Array.isArray(value) && value.length > 0,
+        message: "At least one product image is required",
+      },
+      set: (value) => {
+        if (Array.isArray(value)) {
+          return value.filter(Boolean);
+        }
+
+        if (typeof value === "string" && value.trim()) {
+          return [value.trim()];
+        }
+
+        return [];
+      },
+    },
     category: { type: ObjectId, ref: "Category", required: true },
     description: { type: String, required: true },
     reviews: [reviewSchema],
@@ -29,7 +45,7 @@ const productSchema = mongoose.Schema(
     price: { type: Number, required: true, default: 0 },
     countInStock: { type: Number, required: true, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Product = mongoose.model("Product", productSchema);

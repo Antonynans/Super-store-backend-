@@ -51,6 +51,7 @@ const createOrder = async (req, res) => {
       return {
         ...itemFromClient,
         product: itemFromClient._id,
+        images: matchingItemFromDB.images,
         price: matchingItemFromDB.price,
         _id: undefined,
       };
