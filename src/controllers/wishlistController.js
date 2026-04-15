@@ -4,7 +4,7 @@ const getWishlist = async (req, res) => {
   try {
     let wishlist = await Wishlist.findOne({ user: req.user._id }).populate(
       "products",
-      "_id name price image brand rating numReviews description countInStock",
+      "_id name price images rating numReviews description countInStock",
     );
 
     if (!wishlist) {
@@ -42,7 +42,7 @@ const addToWishlist = async (req, res) => {
 
     wishlist = await wishlist.populate(
       "products",
-      "_id name price image brand rating numReviews description countInStock",
+      "_id name price images rating numReviews description countInStock",
     );
 
     res.json(wishlist);
@@ -69,7 +69,7 @@ const removeFromWishlist = async (req, res) => {
 
     wishlist = await wishlist.populate(
       "products",
-      "_id name price image brand rating numReviews description countInStock",
+      "_id name price images rating numReviews description countInStock",
     );
 
     res.json(wishlist);

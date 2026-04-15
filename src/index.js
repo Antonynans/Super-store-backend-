@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import { fileURLToPath } from "url";
 
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -14,8 +15,10 @@ import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import cors from "cors";
 
-dotenv.config();
-const port = process.env.PORT || 4000;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+dotenv.config({ path: path.join(__dirname, "../.env") });
+const port = process.env.PORT || 8000;
 
 connectDB();
 
@@ -47,7 +50,7 @@ app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
 
 app.listen(port, () => console.log(`Server running on port: ${port}`));

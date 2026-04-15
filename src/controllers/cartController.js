@@ -29,7 +29,7 @@ const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: req.user._id }).populate(
       "cartItems.product",
-      "_id name price image brand",
+      "_id name price images",
     );
 
     if (!cart) {
@@ -53,7 +53,7 @@ const getCart = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
-    const { product: productId, qty } = req.body;
+    const { productId, qty } = req.body;
 
     const product = await Product.findById(productId);
     if (!product) {
@@ -76,9 +76,20 @@ const addToCart = async (req, res) => {
       });
     }
 
-    const existItem = cart.cartItems.find(
-      (item) => item.product.toString() === productId.toString(),
-    );
+    const normalizeProductId = (product) => {
+      if (!product) return null;
+      if (typeof product === "string") return product;
+      if (product._id) return product._id.toString();
+      if (typeof product.toString === "function") return product.toString();
+      return null;
+    };
+
+    const normalizedProductId = normalizeProductId(productId);
+
+    const existItem = cart.cartItems.find((item) => {
+      const itemProductId = normalizeProductId(item.product);
+      return itemProductId && itemProductId === normalizedProductId;
+    });
 
     if (existItem) {
       existItem.qty = qty;
@@ -86,9 +97,9 @@ const addToCart = async (req, res) => {
       cart.cartItems.push({
         product: productId,
         name: product.name,
-        image: product.image,
+        images: product.images,
         price: product.price,
-        brand: product.brand,
+        // brand: product.brand,
         qty,
       });
     }
@@ -116,9 +127,18 @@ const removeFromCart = async (req, res) => {
       return res.status(404).json({ error: "Cart not found" });
     }
 
-    cart.cartItems = cart.cartItems.filter(
-      (item) => item.product.toString() !== productId,
-    );
+    const normalizeProductId = (product) => {
+      if (!product) return null;
+      if (typeof product === "string") return product;
+      if (product._id) return product._id.toString();
+      if (typeof product.toString === "function") return product.toString();
+      return null;
+    };
+
+    cart.cartItems = cart.cartItems.filter((item) => {
+      const itemProductId = normalizeProductId(item.product);
+      return itemProductId !== productId;
+    });
 
     const prices = calcPrices(cart.cartItems);
     cart.itemsPrice = prices.itemsPrice;
