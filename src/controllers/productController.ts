@@ -1,5 +1,5 @@
-import asyncHandler from "../middlewares/asyncHandler.js";
-import Product from "../models/productModel.js";
+import asyncHandler from "../middlewares/asyncHandler";
+import Product from "../models/productModel";
 
 const normalizeImages = (imagesInput) => {
   if (Array.isArray(imagesInput)) {
@@ -18,14 +18,8 @@ const normalizeImages = (imagesInput) => {
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const {
-      name,
-      description,
-      price,
-      category,
-      images,
-      countInStock,
-    } = req.body;
+    const { name, description, price, category, images, countInStock } =
+      req.body;
     const normalizedImages = normalizeImages(images);
 
     if (!name || !price || !category || normalizedImages.length === 0) {
@@ -235,9 +229,9 @@ const filterProducts = asyncHandler(async (req, res) => {
   try {
     const { checked, radio } = req.body;
 
-    let args = {};
-    if (checked.length > 0) args.category = checked;
-    if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
+    const args: any = {};
+    if (checked?.length > 0) args.category = checked;
+    if (radio?.length) args.price = { $gte: radio[0], $lte: radio[1] };
 
     const products = await Product.find(args).populate("category");
     res.json(products);

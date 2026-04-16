@@ -1,7 +1,14 @@
-import User from "../models/userModel.js";
-import asyncHandler from "../middlewares/asyncHandler.js";
+import User from "../models/userModel";
+import asyncHandler from "../middlewares/asyncHandler";
 import bcrypt from "bcryptjs";
-import createToken from "../utils/createToken.js";
+import createToken from "../utils/createToken";
+
+const buildUserResponse = (user: any) => ({
+  _id: user._id,
+  username: user.username,
+  email: user.email,
+  isAdmin: user.isAdmin,
+});
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -21,14 +28,16 @@ const createUser = asyncHandler(async (req, res) => {
   const newUser = new User({ username, email, password: hashedPassword });
 
   try {
+    const { accessToken, refreshToken } = createToken(
+      res,
+      newUser._id.toString(),
+    );
+    newUser.refreshToken = refreshToken;
     await newUser.save();
-    createToken(res, newUser._id);
 
     res.status(201).json({
-      _id: newUser._id,
-      username: newUser.username,
-      email: newUser.email,
-      isAdmin: newUser.isAdmin,
+      ...buildUserResponse(newUser),
+      accessToken,
     });
   } catch (error) {
     res.status(400);
@@ -41,36 +50,84 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const existingUser = await User.findOne({ email });
 
-  if (existingUser) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUser.password,
-    );
-
-    if (isPasswordValid) {
-      createToken(res, existingUser._id);
-
-      res.status(201).json({
-        _id: existingUser._id,
-        username: existingUser.username,
-        email: existingUser.email,
-        isAdmin: existingUser.isAdmin,
-      });
-      return;
-    }
+  if (!existingUser) {
+    res.status(401);
+    throw new Error("Invalid email or password");
   }
 
-  res.status(401);
-  throw new Error("Invalid email or password");
+  const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+  if (!isPasswordValid) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+
+  const { accessToken, refreshToken } = createToken(
+    res,
+    existingUser._id.toString(),
+  );
+  existingUser.refreshToken = refreshToken;
+  await existingUser.save();
+
+  res.status(200).json({
+    ...buildUserResponse(existingUser),
+    accessToken,
+  });
 });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
-  res.cookie("jwt", "", {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (refreshToken) {
+    const user = await User.findOne({ refreshToken });
+    if (user) {
+      user.refreshToken = "";
+      await user.save();
+    }
+  }
+
+  res.cookie("accessToken", "", {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+    expires: new Date(0),
+  });
+  res.cookie("refreshToken", "", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
     expires: new Date(0),
   });
 
   res.status(200).json({ message: "Logged out successfully" });
+});
+
+const refreshAuthToken = asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    res.status(401);
+    throw new Error("Refresh token missing.");
+  }
+
+  const existingUser = await User.findOne({ refreshToken });
+  if (!existingUser) {
+    res.status(403);
+    throw new Error("Refresh token invalid.");
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } = createToken(
+    res,
+    existingUser._id.toString(),
+  );
+
+  existingUser.refreshToken = newRefreshToken;
+  await existingUser.save();
+
+  res.status(200).json({
+    ...buildUserResponse(existingUser),
+    accessToken,
+  });
 });
 
 const getAllUsers = asyncHandler(async (req, res) => {
@@ -78,7 +135,7 @@ const getAllUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
-const getCurrentUserProfile = asyncHandler(async (req, res) => {
+const getCurrentUserProfile = asyncHandler(async (req: any, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
@@ -93,7 +150,7 @@ const getCurrentUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-const updateCurrentUserProfile = asyncHandler(async (req, res) => {
+const updateCurrentUserProfile = asyncHandler(async (req: any, res) => {
   const user = await User.findById(req.user._id);
 
   if (user) {
@@ -174,6 +231,7 @@ export {
   createUser,
   loginUser,
   logoutCurrentUser,
+  refreshAuthToken,
   getAllUsers,
   getCurrentUserProfile,
   updateCurrentUserProfile,
