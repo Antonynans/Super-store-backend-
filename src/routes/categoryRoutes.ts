@@ -6,9 +6,9 @@ import {
   removeCategory,
   listCategory,
   readCategory,
-} from "../controllers/categoryController";
+} from "../controllers/categoryController.js";
 
-import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware";
+import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 /**
  * @swagger

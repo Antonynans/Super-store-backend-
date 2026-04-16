@@ -1,7 +1,7 @@
-import User from "../models/userModel";
-import asyncHandler from "../middlewares/asyncHandler";
+import User from "../models/userModel.js";
+import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
-import createToken from "../utils/createToken";
+import createToken from "../utils/createToken.js";
 
 const buildUserResponse = (user: any) => ({
   _id: user._id,

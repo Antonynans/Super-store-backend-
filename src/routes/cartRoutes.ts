@@ -9,9 +9,9 @@ import {
   updateShippingAddress,
   updatePaymentMethod,
   clearCart,
-} from "../controllers/cartController";
+} from "../controllers/cartController.js";
 
-import { authenticate } from "../middlewares/authMiddleware";
+import { authenticate } from "../middlewares/authMiddleware.js";
 
 /**
  * @swagger

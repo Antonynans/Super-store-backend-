@@ -1,5 +1,5 @@
-import Cart from "../models/cartModel";
-import Product from "../models/productModel";
+import Cart from "../models/cartModel.js";
+import Product from "../models/productModel.js";
 
 function calcPrices(cartItems: any[]) {
   const itemsPrice = cartItems.reduce(
