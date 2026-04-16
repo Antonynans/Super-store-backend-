@@ -1,7 +1,7 @@
-import Cart from "../models/cartModel.js";
-import Product from "../models/productModel.js";
+import Cart from "../models/cartModel";
+import Product from "../models/productModel";
 
-function calcPrices(cartItems) {
+function calcPrices(cartItems: any[]) {
   const itemsPrice = cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
     0,
@@ -9,25 +9,21 @@ function calcPrices(cartItems) {
 
   const shippingPrice = itemsPrice > 100 ? 0 : 10;
   const taxRate = 0.15;
-  const taxPrice = (itemsPrice * taxRate).toFixed(2);
+  const taxPrice = parseFloat((itemsPrice * taxRate).toFixed(2));
 
-  const totalPrice = (
-    itemsPrice +
-    shippingPrice +
-    parseFloat(taxPrice)
-  ).toFixed(2);
+  const totalPrice = itemsPrice + shippingPrice + taxPrice;
 
   return {
-    itemsPrice: itemsPrice.toFixed(2),
-    shippingPrice: shippingPrice.toFixed(2),
+    itemsPrice,
+    shippingPrice,
     taxPrice,
     totalPrice,
   };
 }
 
-const getCart = async (req, res) => {
+const getCart = async (req: any, res: any) => {
   try {
-    const cart = await Cart.findOne({ user: req.user._id }).populate(
+    const cart: any = await Cart.findOne({ user: req.user._id }).populate(
       "cartItems.product",
       "_id name price images countInStock",
     );
@@ -45,7 +41,7 @@ const getCart = async (req, res) => {
       });
     }
 
-    cart.cartItems = cart.cartItems.map((item) => {
+    cart.cartItems = cart.cartItems.map((item: any) => {
       if (item.countInStock == null && item.product?.countInStock != null) {
         item.countInStock = item.product.countInStock;
       }
@@ -53,7 +49,7 @@ const getCart = async (req, res) => {
     });
 
     res.json(cart);
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 };
@@ -67,7 +63,7 @@ const addToCart = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    let cart = await Cart.findOne({ user: req.user._id });
+    let cart: any = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       cart = new Cart({
@@ -113,17 +109,17 @@ const addToCart = async (req, res) => {
   }
 };
 
-const removeFromCart = async (req, res) => {
+const removeFromCart = async (req: any, res: any) => {
   try {
     const { productId } = req.params;
 
-    let cart = await Cart.findOne({ user: req.user._id });
+    let cart: any = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
 
-    const normalizeProductId = (product) => {
+    const normalizeProductId = (product: any) => {
       if (!product) return null;
       if (typeof product === "string") return product;
       if (product._id) return product._id.toString();
@@ -149,9 +145,9 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-const updateShippingAddress = async (req, res) => {
+const updateShippingAddress = async (req: any, res: any) => {
   try {
-    let cart = await Cart.findOne({ user: req.user._id });
+    let cart: any = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
@@ -165,9 +161,9 @@ const updateShippingAddress = async (req, res) => {
   }
 };
 
-const updatePaymentMethod = async (req, res) => {
+const updatePaymentMethod = async (req: any, res: any) => {
   try {
-    let cart = await Cart.findOne({ user: req.user._id });
+    let cart: any = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
@@ -181,18 +177,18 @@ const updatePaymentMethod = async (req, res) => {
   }
 };
 
-const updateCartQty = async (req, res) => {
+const updateCartQty = async (req: any, res: any) => {
   try {
     const { productId } = req.params;
     const { qty } = req.body;
 
-    let cart = await Cart.findOne({ user: req.user._id });
+    let cart: any = await Cart.findOne({ user: req.user._id });
 
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
 
-    const normalizeProductId = (product) => {
+    const normalizeProductId = (product: any) => {
       if (!product) return null;
       if (typeof product === "string") return product;
       if (product._id) return product._id.toString();

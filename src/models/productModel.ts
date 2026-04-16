@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema;
 
-const reviewSchema = mongoose.Schema(
+const reviewSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     rating: { type: Number, required: true },
@@ -15,7 +15,7 @@ const reviewSchema = mongoose.Schema(
   { timestamps: true },
 );
 
-const productSchema = mongoose.Schema(
+const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     images: {

@@ -1,5 +1,5 @@
-import Order from "../models/orderModel.js";
-import Product from "../models/productModel.js";
+import Order from "../models/orderModel";
+import Product from "../models/productModel";
 
 function calcPrices(orderItems) {
   const itemsPrice = orderItems.reduce(
@@ -195,7 +195,7 @@ const markOrderAsPaid = async (req, res) => {
 
     if (order) {
       order.isPaid = true;
-      order.paidAt = Date.now();
+      order.paidAt = new Date();
       order.paymentResult = {
         id: req.body.id,
         status: req.body.status,
@@ -220,7 +220,7 @@ const markOrderAsDelivered = async (req, res) => {
 
     if (order) {
       order.isDelivered = true;
-      order.deliveredAt = Date.now();
+      order.deliveredAt = new Date();
 
       const updatedOrder = await order.save();
       res.json(updatedOrder);

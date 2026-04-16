@@ -3,17 +3,20 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import fileUpload from "express-fileupload";
+import rateLimit from "express-rate-limit";
 import { fileURLToPath } from "url";
 
-import connectDB from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
-import categoryRoutes from "./routes/categoryRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
-import uploadRoutes from "./routes/uploadRoutes.js";
-import orderRoutes from "./routes/orderRoutes.js";
-import cartRoutes from "./routes/cartRoutes.js";
-import wishlistRoutes from "./routes/wishlistRoutes.js";
+import connectDB from "./config/db";
+import userRoutes from "./routes/userRoutes";
+import categoryRoutes from "./routes/categoryRoutes";
+import productRoutes from "./routes/productRoutes";
+import uploadRoutes from "./routes/uploadRoutes";
+import orderRoutes from "./routes/orderRoutes";
+import cartRoutes from "./routes/cartRoutes";
+import wishlistRoutes from "./routes/wishlistRoutes";
 import cors from "cors";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +30,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.set("trust proxy", 1);
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "Too many requests from this IP, please try again later.",
+});
+
+app.use(limiter);
 app.use(
   cors({
     origin: process.env.ALLOWED_ORIGINS?.split(",") || [
@@ -36,6 +50,7 @@ app.use(
     credentials: true,
   }),
 );
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(fileUpload());
 
 app.use("/api/users", userRoutes);
