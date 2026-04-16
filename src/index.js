@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.ALLOWED_ORIGINS?.split(",") || [
-      "http://localhost:3000",
+      "https://super-store13e.netlify.app",
       "http://localhost:5173",
     ],
     credentials: true,
