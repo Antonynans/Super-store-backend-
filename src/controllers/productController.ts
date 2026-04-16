@@ -1,5 +1,5 @@
-import asyncHandler from "../middlewares/asyncHandler";
-import Product from "../models/productModel";
+import asyncHandler from "../middlewares/asyncHandler.js";
+import Product from "../models/productModel.js";
 
 const normalizeImages = (imagesInput) => {
   if (Array.isArray(imagesInput)) {

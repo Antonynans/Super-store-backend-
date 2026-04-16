@@ -6,17 +6,17 @@ import fileUpload from "express-fileupload";
 import rateLimit from "express-rate-limit";
 import { fileURLToPath } from "url";
 
-import connectDB from "./config/db";
-import userRoutes from "./routes/userRoutes";
-import categoryRoutes from "./routes/categoryRoutes";
-import productRoutes from "./routes/productRoutes";
-import uploadRoutes from "./routes/uploadRoutes";
-import orderRoutes from "./routes/orderRoutes";
-import cartRoutes from "./routes/cartRoutes";
-import wishlistRoutes from "./routes/wishlistRoutes";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/userRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "./config/swagger";
+import { swaggerSpec } from "./config/swagger.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

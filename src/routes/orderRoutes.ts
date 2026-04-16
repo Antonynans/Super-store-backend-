@@ -12,9 +12,9 @@ import {
   findOrderById,
   markOrderAsPaid,
   markOrderAsDelivered,
-} from "../controllers/orderController";
+} from "../controllers/orderController.js";
 
-import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware";
+import { authenticate, authorizeAdmin } from "../middlewares/authMiddleware.js";
 
 /**
  * @swagger

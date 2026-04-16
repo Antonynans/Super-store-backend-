@@ -1,5 +1,5 @@
-import Order from "../models/orderModel";
-import Product from "../models/productModel";
+import Order from "../models/orderModel.js";
+import Product from "../models/productModel.js";
 
 function calcPrices(orderItems) {
   const itemsPrice = orderItems.reduce(
