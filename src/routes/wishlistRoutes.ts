@@ -5,9 +5,9 @@ import {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-} from "../controllers/wishlistController";
+} from "../controllers/wishlistController.js";
 
-import { authenticate } from "../middlewares/authMiddleware";
+import { authenticate } from "../middlewares/authMiddleware.js";
 
 /**
  * @swagger
