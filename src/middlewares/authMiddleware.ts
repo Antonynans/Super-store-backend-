@@ -32,6 +32,9 @@ const authenticate: RequestHandler = asyncHandler(
 
       next();
     } catch (error) {
+      if (res.headersSent || res.statusCode === 401) {
+        throw error;
+      }
       res.status(401);
       throw new Error("Not authorized, token failed.");
     }

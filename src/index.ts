@@ -65,7 +65,27 @@ app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
 
-// const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
+
+app.use(
+  (
+    err: any,
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    const statusCode =
+      err.statusCode && err.statusCode !== 200
+        ? err.statusCode
+        : res.statusCode !== 200
+          ? res.statusCode
+          : 500;
+
+    res.status(statusCode).json({
+      message: err.message,
+      stack: process.env.NODE_ENV === "production" ? null : err.stack,
+    });
+  },
+);
 
 app.listen(port, () => console.log(`Server running on port: ${port}`));
