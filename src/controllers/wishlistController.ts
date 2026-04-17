@@ -25,6 +25,10 @@ const addToWishlist = async (req, res) => {
   try {
     const { productId } = req.body;
 
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
     let wishlist = await Wishlist.findOne({ user: req.user._id });
 
     if (!wishlist) {
@@ -33,7 +37,11 @@ const addToWishlist = async (req, res) => {
         products: [productId],
       });
     } else {
-      if (!wishlist.products.includes(productId)) {
+      const alreadyExists = wishlist.products.some(
+        (id) => id.toString() === productId,
+      );
+
+      if (!alreadyExists) {
         wishlist.products.push(productId);
       }
     }
