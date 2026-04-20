@@ -2,6 +2,12 @@
 
 A robust REST API built with Node.js, Express, and MongoDB for a full-featured e-commerce platform.
 
+## 🌐 Live API
+
+[![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=vercel)](https://super-store13e.netlify.app/)
+[![API Docs](https://img.shields.io/badge/API-Swagger-blue?style=for-the-badge&logo=swagger)](https://super-store-backend-ws7x.onrender.com/api/docs)
+[![Frontend Repo](https://img.shields.io/badge/Frontend-Live-green?style=for-the-badge&logo=vercel)](https://github.com/Antonynans/super-store-frontend)
+
 ## Table of Contents
 
 - [Features](#features)
@@ -117,43 +123,6 @@ NODE_ENV=development
 ### Upload
 
 - `POST /api/upload` - Upload image to Cloudinary (Protected)
-
-## Project Structure
-
-```
-backend/
-├── config/
-│   ├── cloudinary.js
-│   └── db.js
-├── controllers/
-│   ├── categoryController.js
-│   ├── orderController.js
-│   ├── productController.js
-│   ├── uploadController.js
-│   └── userController.js
-├── middlewares/
-│   ├── asyncHandler.js
-│   ├── authMiddleware.js
-│   ├── checkId.js
-│   └── uploadMiddleware.js
-├── models/
-│   ├── categoryModel.js
-│   ├── orderModel.js
-│   ├── productModel.js
-│   └── userModel.js
-├── routes/
-│   ├── categoryRoutes.js
-│   ├── orderRoutes.js
-│   ├── productRoutes.js
-│   ├── uploadRoutes.js
-│   └── userRoutes.js
-├── scripts/
-│   └── seedProducts.js
-├── utils/
-│   └── createToken.js
-├── index.js
-└── package.json
-```
 
 ## Contributing
 
