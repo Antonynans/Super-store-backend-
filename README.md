@@ -6,7 +6,7 @@ A robust REST API built with Node.js, Express, and MongoDB for a full-featured e
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-green?style=for-the-badge&logo=vercel)](https://super-store13e.netlify.app/)
 [![API Docs](https://img.shields.io/badge/API-Swagger-blue?style=for-the-badge&logo=swagger)](https://super-store-backend-ws7x.onrender.com/api/docs)
-You can explore and test all endpoints directly from the Swagger UI.
+[![Frontend Repo](https://img.shields.io/badge/Frontend-Live-green?style=for-the-badge&logo=vercel)](https://github.com/Antonynans/super-store-frontend)
 
 ## Table of Contents
 
