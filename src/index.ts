@@ -45,7 +45,7 @@ app.use(
   cors({
     origin: process.env.ALLOWED_ORIGINS?.split(",") || [
       "https://super-store13e.netlify.app",
-      "https://shopnovae.netlify.app/"
+      "https://shopnovae.netlify.app"
     ],
     credentials: true,
   }),
